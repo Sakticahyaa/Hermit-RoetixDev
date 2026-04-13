@@ -27,18 +27,32 @@ export async function fetchTenant(slug: string): Promise<Tenant> {
 }
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
+/** Fetch active (non-archived) projects only */
 export async function fetchProjects(tenantId: string): Promise<Project[]> {
   const { data, error } = await supabase
     .from('projects')
     .select('*')
     .eq('tenant_id', tenantId)
+    .eq('archived', false)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  return data ?? []
+}
+
+/** Fetch all projects including archived — used by ProjectManager */
+export async function fetchAllProjects(tenantId: string): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('tenant_id', tenantId)
+    .order('archived', { ascending: true })
     .order('created_at', { ascending: true })
   if (error) throw error
   return data ?? []
 }
 
 export async function createProject(p: ProjectInsert): Promise<Project> {
-  const { data, error } = await supabase.from('projects').insert(p).select().single()
+  const { data, error } = await supabase.from('projects').insert({ ...p, archived: false }).select().single()
   if (error) throw error
   return data
 }
@@ -49,6 +63,21 @@ export async function updateProject(id: string, p: ProjectUpdate): Promise<Proje
   return data
 }
 
+export async function archiveProject(id: string): Promise<Project> {
+  const { data, error } = await supabase
+    .from('projects').update({ archived: true }).eq('id', id).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function unarchiveProject(id: string): Promise<Project> {
+  const { data, error } = await supabase
+    .from('projects').update({ archived: false }).eq('id', id).select().single()
+  if (error) throw error
+  return data
+}
+
+/** Hard delete — only used if PM explicitly wants to permanently remove */
 export async function deleteProject(id: string): Promise<void> {
   const { error } = await supabase.from('projects').delete().eq('id', id)
   if (error) throw error

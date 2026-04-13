@@ -6,16 +6,17 @@ export interface Tenant {
   created_at: string
 }
 
-// ─── Project (replaces "branch") ──────────────────────────────────────────────
+// ─── Project ──────────────────────────────────────────────────────────────────
 export interface Project {
   id: string
   tenant_id: string
   name: string
   color: string
+  archived: boolean
   created_at: string
 }
 export type ProjectInsert = Omit<Project, 'id' | 'created_at'>
-export type ProjectUpdate = Partial<Pick<Project, 'name' | 'color'>>
+export type ProjectUpdate = Partial<Pick<Project, 'name' | 'color' | 'archived'>>
 
 // ─── Team Member ──────────────────────────────────────────────────────────────
 export interface Member {

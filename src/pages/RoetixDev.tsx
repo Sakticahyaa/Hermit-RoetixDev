@@ -9,16 +9,20 @@ import { TaskForm } from '../components/TaskForm'
 import { ProjectManager } from '../components/ProjectManager'
 import { GanttChart } from '../components/seer/GanttChart'
 import { useTenant } from '../hooks/useTenant'
-import { useProjects, ProjectsContext } from '../hooks/useProjects'
+import { useProjects, useAllProjects, ProjectsContext } from '../hooks/useProjects'
 import { useMembers } from '../hooks/useMembers'
 import { useTasks } from '../hooks/useTasks'
 import { useSeerEntries } from '../hooks/useSeerEntries'
-import type { ViewType, TaskStatus } from '../types'
+import type { ViewType, TaskStatus, Project } from '../types'
 
 export function RoetixDev() {
   const { tenant, loading: tenantLoading } = useTenant()
 
-  const { projects, addProject, editProject, removeProject, getColor } = useProjects(tenant?.id)
+  // Active projects — used everywhere in the app
+  const { projects, removeFromActive, addToActive, getColor } = useProjects(tenant?.id)
+  // All projects (active + archived) — only loaded inside ProjectManager
+  const allProjectsHook = useAllProjects(tenant?.id)
+
   const { members } = useMembers(tenant?.id)
   const { entries, addEntry, editEntry, removeEntry } = useSeerEntries(tenant?.id)
   const {
@@ -36,6 +40,12 @@ export function RoetixDev() {
   const openNewTask = (status: TaskStatus = 'Unassigned') => {
     setNewInit(status)
     setShowNewTask(true)
+  }
+
+  // Sync active projects list when ProjectManager archives/unarchives
+  const handleActiveListChange = (project: Project, action: 'archive' | 'unarchive') => {
+    if (action === 'archive') removeFromActive(project.id)
+    else addToActive(project)
   }
 
   if (tenantLoading) {
@@ -68,7 +78,6 @@ export function RoetixDev() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {!isSeer && (
             <>
-              {/* Sub-header with project management */}
               <div style={{
                 padding: '8px 20px', borderBottom: '1px solid var(--border)',
                 background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 10,
@@ -99,7 +108,6 @@ export function RoetixDev() {
             </>
           )}
 
-          {/* Main content */}
           <div style={{ flex: 1, overflow: 'auto' }}>
             {error && (
               <div style={{ margin: 16, padding: '10px 14px', background: '#ef444415', border: '1px solid #ef444433', borderRadius: 6, fontSize: 12, color: '#ef4444', display: 'flex', gap: 6 }}>
@@ -151,7 +159,6 @@ export function RoetixDev() {
         </div>
       </div>
 
-      {/* Modals */}
       {showNewTask && (
         <TaskForm
           projects={projects}
@@ -163,11 +170,14 @@ export function RoetixDev() {
 
       {showProjects && (
         <ProjectManager
-          projects={projects}
-          onAdd={(name, color) => addProject({ name, color })}
-          onEdit={(id, name, color) => editProject(id, { name, color })}
-          onDelete={removeProject}
+          allProjects={allProjectsHook.allProjects}
+          onAdd={allProjectsHook.addProject}
+          onEdit={(id, name, color) => allProjectsHook.editProject(id, { name, color })}
+          onArchive={allProjectsHook.archive}
+          onUnarchive={allProjectsHook.unarchive}
+          onDelete={allProjectsHook.remove}
           onClose={() => setShowProj(false)}
+          onActiveListChange={handleActiveListChange}
         />
       )}
     </ProjectsContext.Provider>
