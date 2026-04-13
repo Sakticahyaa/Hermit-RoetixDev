@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s -H \"Authorization: Bearer sbp_83fa530a27110240e5792ccf640c641f8231c45f\" \"https://api.supabase.com/v1/projects\")",
+      "Bash(curl:*)",
+      "Bash(npm create:*)",
+      "Bash(npx create-vite@latest . --template react-ts)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(where git:*)",
+      "Bash(git --version)",
+      "Bash(git config:*)",
+      "Bash(git credential-manager:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('html_url', d.get\\('message',''\\)\\)\\)\")"
+    ]
+  }
+}
