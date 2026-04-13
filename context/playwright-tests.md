@@ -1,8 +1,10 @@
 # Hermit RoetixDev — MCP Playwright Test Cases
 
+**File**: `C:\VANGUARD\Hyke\Hermit\hermit-roetixdev\context\playwright-tests.md`  
 **Base URL**: http://localhost:5173  
 **App route**: /RoetixDev  
-**Run these tests in order.** Each test assumes the previous passed unless noted as independent.
+**Run these tests in order.** Each test assumes the previous passed unless noted as independent.  
+**Database**: Hermit Supabase project — `jdnpgtmouhqymvawdnxp.supabase.co` (dedicated, separate from Sentry)
 
 ---
 
@@ -198,26 +200,7 @@ Table renders, hover state works, modals open from rows.
 
 ---
 
-## TC-09 · Project View
-
-**What it verifies**: Project view groups tasks by project correctly.
-
-### Steps
-1. Ensure TC-10 ran and `Roetix v2` project exists
-2. Assign at least 2 tasks to the `Roetix v2` project
-3. In the Sidebar, click **Project**
-4. **Expect**: View shows tasks grouped by project with a colored section header per project
-5. **Expect**: Section header shows project color dot, project name, and task count
-6. **Expect**: Tasks with no project appear under a "No Project" section
-7. **Expect**: Each task renders as a TaskCard (same as Board view)
-8. **Expect**: Grid layout — multiple cards per row on wide screens
-
-### Pass Criteria
-Tasks grouped correctly by project, colored headers match project colors.
-
----
-
-## TC-10 · Project Management — Add, Edit, Archive, Restore
+## TC-09 · Project Management — Add, Edit, Archive, Restore
 
 **What it verifies**: Projects represent real app projects (e.g. Roetix, Batin). Archive preserves history; delete is permanent.
 
@@ -263,6 +246,24 @@ Archive hides from active views. Restore brings it back. Delete is permanent wit
 
 ---
 
+## TC-10 · Project View
+
+**What it verifies**: Project view groups tasks by project correctly.
+
+### Steps
+1. From TC-08 tasks, edit at least 2 and assign them to `Roetix v2` (created in TC-09)
+2. In the Sidebar, click **Project**
+3. **Expect**: View shows tasks grouped by project with a colored section header per project
+4. **Expect**: Section header shows project color dot, project name, and task count badge
+5. **Expect**: Tasks with no project appear under a "No Project" section at the bottom
+6. **Expect**: Each task renders as a TaskCard (same style as Board view)
+7. **Expect**: Grid layout — multiple cards per row on wide screens
+
+### Pass Criteria
+Tasks grouped correctly by project. Colored section headers match project colors. Unlinked tasks appear under "No Project".
+
+---
+
 ## TC-11 · Filtering Tasks
 
 **What it verifies**: All filter controls narrow down the task list correctly.
@@ -274,9 +275,9 @@ Archive hides from active views. Restore brings it back. Delete is permanent wit
 4. **Expect**: Only tasks assigned to "Roetix v2" project appear across all columns
 5. **Expect**: Task count in top-right shows reduced number
 6. Select a member from the Assignee dropdown (e.g., **Sakti**)
-7. **Expect**: Tasks filtered to only Sakti's tasks in Frontend UI
+7. **Expect**: Tasks filtered to only Sakti's tasks in Roetix v2
 8. Select **Ongoing** from the Status dropdown
-9. **Expect**: Only Ongoing tasks for Sakti in Frontend UI shown
+9. **Expect**: Only Ongoing tasks for Sakti in Roetix v2 shown
 10. Clear filters by clicking "Clear" button (appears when any filter active)
 11. **Expect**: All tasks return, "Clear" button disappears
 12. Type `login` in the search box
@@ -499,8 +500,8 @@ No white screen of death. Error displayed. Recovery possible after going online.
 | TC-06 | Task Log Flowchart | ⬜ | |
 | TC-07 | Full Status Workflow | ⬜ | |
 | TC-08 | List View | ⬜ | |
-| TC-09 | Project View | ⬜ | |
-| TC-10 | Project Management | ⬜ | |
+| TC-09 | Project Management | ⬜ | |
+| TC-10 | Project View | ⬜ | |
 | TC-11 | Filtering Tasks | ⬜ | |
 | TC-12 | Seer Load & Nav | ⬜ | |
 | TC-13 | Seer Add Item | ⬜ | |
@@ -516,8 +517,9 @@ No white screen of death. Error displayed. Recovery possible after going online.
 
 ## Notes for MCP Playwright Execution
 
-- Each test case is self-contained enough to re-run independently (except dependency chains noted above)
-- TC-03, TC-10, TC-13 create data that later tests depend on — run in order for best results
-- Replace ⬜ with ✅ (pass), ❌ (fail), or ⚠️ (partial) after execution
-- Capture screenshots on failure for debugging
-- The app uses Supabase live data — tests are NOT isolated (creates real records)
+- To run: open a new session and say **"Run playwright tests from `C:\VANGUARD\Hyke\Hermit\hermit-roetixdev\context\playwright-tests.md` starting at TC-01"**
+- Run in order — dependency chain: TC-03 → TC-05 → TC-06 → TC-07 (task data), TC-09 → TC-10 → TC-11 (project data), TC-09 → TC-13 (seer project)
+- Replace ⬜ with ✅ (pass), ❌ (fail), or ⚠️ (partial) after each test
+- Capture a screenshot on any failure before moving on
+- Tests hit the **live Hermit Supabase database** — they create real records. Run on a clean DB or clean up after
+- Dev server must be running: `npm run dev` in `C:\VANGUARD\Hyke\Hermit\hermit-roetixdev`
