@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 import { startOfWeek, addWeeks, addDays, format } from 'date-fns'
 import { WeekGrid } from '../components/timekeeper/WeekGrid'
@@ -12,9 +12,15 @@ export function TimekeeperPage() {
   const { slots, addSlot, editSlot, removeSlot } = useTimekeeperSlots(tenant.id)
 
   const [weekOffset,      setWeekOffset]      = useState(0)
-  const [visibleMembers,  setVisibleMembers]  = useState<Set<string>>(() => new Set(members.map(m => m.id)))
+  const [visibleMembers,  setVisibleMembers]  = useState<Set<string>>(new Set())
   const [editingSlot,     setEditingSlot]     = useState<TimekeeperSlot | null>(null)
   const [draft,           setDraft]           = useState<{ dayIndex: number; startHour: number; endHour: number } | null>(null)
+
+  // Populate visibleMembers once members load (they arrive async from context)
+  useEffect(() => {
+    if (members.length === 0) return
+    setVisibleMembers(prev => prev.size === 0 ? new Set(members.map(m => m.id)) : prev)
+  }, [members])
 
   const weekStart = useMemo(() => {
     const base = startOfWeek(new Date(), { weekStartsOn: 1 })

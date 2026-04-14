@@ -165,7 +165,7 @@ export function WeekGrid({
 
   const slotInstances = useMemo(() =>
     expandSlots(slots, weekDays, memberMap)
-      .filter(inst => visibleMemberIds.has(inst.slot.member_id)),
+      .filter(inst => visibleMemberIds.size === 0 || visibleMemberIds.has(inst.slot.member_id)),
     [slots, weekDays, memberMap, visibleMemberIds],
   )
 
