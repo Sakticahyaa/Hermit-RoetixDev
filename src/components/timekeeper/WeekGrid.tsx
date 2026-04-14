@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { format, isSameDay, startOfDay, getDay } from 'date-fns'
 import type { Member, TimekeeperSlot } from '../../types'
 
-const HOURS_START = 6
-const HOURS_END   = 22   // last row = 21:00–22:00
+const HOURS_START = 0
+const HOURS_END   = 24   // full 24h
 const ROW_HEIGHT  = 48   // px per hour
 const TIME_COL_W  = 52   // px for time labels column
 const DAY_COL_W   = 130  // px per day column
