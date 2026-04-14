@@ -6,6 +6,7 @@ import type {
   TaskLog, TaskLogInsert,
   SeerEntry, SeerInsert, SeerUpdate,
   Tenant,
+  TimekeeperSlot, TimekeeperSlotInsert, TimekeeperSlotUpdate,
 } from '../types'
 
 // ─── Client ───────────────────────────────────────────────────────────────────
@@ -202,5 +203,42 @@ export async function updateSeerEntry(id: string, updates: SeerUpdate): Promise<
 
 export async function deleteSeerEntry(id: string): Promise<void> {
   const { error } = await supabase.from('seer_entries').delete().eq('id', id)
+  if (error) throw error
+}
+
+// ─── Timekeeper Slots ─────────────────────────────────────────────────────────
+export async function fetchTimekeeperSlots(tenantId: string): Promise<TimekeeperSlot[]> {
+  const { data, error } = await supabase
+    .from('timekeeper_slots')
+    .select('*, member:team_members(*)')
+    .eq('tenant_id', tenantId)
+    .order('start_time')
+  if (error) throw error
+  return (data ?? []) as TimekeeperSlot[]
+}
+
+export async function createTimekeeperSlot(slot: TimekeeperSlotInsert): Promise<TimekeeperSlot> {
+  const { data, error } = await supabase
+    .from('timekeeper_slots')
+    .insert(slot)
+    .select('*, member:team_members(*)')
+    .single()
+  if (error) throw error
+  return data as TimekeeperSlot
+}
+
+export async function updateTimekeeperSlot(id: string, updates: TimekeeperSlotUpdate): Promise<TimekeeperSlot> {
+  const { data, error } = await supabase
+    .from('timekeeper_slots')
+    .update(updates)
+    .eq('id', id)
+    .select('*, member:team_members(*)')
+    .single()
+  if (error) throw error
+  return data as TimekeeperSlot
+}
+
+export async function deleteTimekeeperSlot(id: string): Promise<void> {
+  const { error } = await supabase.from('timekeeper_slots').delete().eq('id', id)
   if (error) throw error
 }

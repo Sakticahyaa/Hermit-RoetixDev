@@ -132,3 +132,24 @@ export interface TaskFilters {
 }
 
 export type ViewType = 'board' | 'list' | 'project'
+
+// ─── Timekeeper ───────────────────────────────────────────────────────────────
+export interface TimekeeperSlot {
+  id: string
+  tenant_id: string
+  member_id: string
+  title: string
+  level: 1 | 2
+  start_time: string        // ISO 8601 timestamptz
+  end_time: string          // ISO 8601 timestamptz
+  is_recurring: boolean
+  recurrence_type: 'daily' | 'weekly' | null
+  recurrence_until: string | null   // 'YYYY-MM-DD'
+  notes: string | null
+  created_at: string
+  // joined
+  member?: Member
+}
+
+export type TimekeeperSlotInsert = Omit<TimekeeperSlot, 'id' | 'created_at' | 'member'>
+export type TimekeeperSlotUpdate = Partial<Omit<TimekeeperSlotInsert, 'tenant_id'>>
