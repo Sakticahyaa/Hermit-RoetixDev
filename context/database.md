@@ -49,6 +49,17 @@ Gantt chart data — independent from tasks.
 id, tenant_id, project_id, task_name, description, start_date, end_date, color, order_index, created_at, updated_at
 ```
 
+### timekeeper_slots
+PM/bot tracks team availability/busy blocks.
+```
+id, tenant_id, member_id (FK team_members), title, level (1|2),
+start_time (timestamptz), end_time (timestamptz),
+is_recurring (bool), recurrence_type ('daily'|'weekly'|null),
+recurrence_until (date|null), notes, created_at
+```
+Level 1 = hard unavailable (solid block). Level 2 = reachable (striped block).
+Recurring slots are stored once; frontend expands them per visible week.
+
 ## RLS
 Disabled — open access via anon key.
 
