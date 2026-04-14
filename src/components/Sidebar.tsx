@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2 } from 'lucide-react'
 import type { CSSProperties } from 'react'
+import { HermitCrabIcon } from './ui/HermitCrabIcon'
 
 const navStyle = (isActive: boolean): CSSProperties => ({
   display: 'flex',
@@ -38,8 +39,9 @@ export function Sidebar({ onManageProjects }: Props) {
             width: 28, height: 28, borderRadius: 6,
             background: 'var(--accent)', display: 'flex',
             alignItems: 'center', justifyContent: 'center',
-            fontSize: 14, fontWeight: 800, color: '#fff',
-          }}>H</div>
+          }}>
+            <HermitCrabIcon size={18} color="#fff" />
+          </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>Hermit</div>
             <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: -2 }}>RoetixDev</div>
