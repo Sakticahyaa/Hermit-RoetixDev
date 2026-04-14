@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="#6366f1"/>
+
+  <!-- Shell — large rounded dome -->
+  <path d="M18 5C13 5 10 9 10 14C10 20 13.5 26 18 26C22.5 26 26 20 26 14C26 9 23 5 18 5Z" fill="white"/>
+  <!-- Shell inner spiral -->
+  <path d="M18 9C15.5 9 14 11 14 14C14 17.5 16 21 18 21C20 21 22 17.5 22 14C22 11 20.5 9 18 9Z" fill="rgba(99,102,241,0.25)"/>
+  <circle cx="18" cy="14" r="3.5" fill="rgba(99,102,241,0.35)"/>
+
+  <!-- Body -->
+  <ellipse cx="10.5" cy="15" rx="3" ry="2.5" fill="white"/>
+
+  <!-- Upper claw -->
+  <path d="M8.5 13L5 10.5L7 14Z" fill="white"/>
+  <!-- Lower claw -->
+  <path d="M8.5 17L5 19.5L7.5 17Z" fill="white"/>
+
+  <!-- Antennae -->
+  <line x1="12" y1="8"  x2="9"  y2="3"  stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="14" y1="7"  x2="13" y2="2"  stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Eyes -->
+  <circle cx="10"  cy="12.5" r="1.1" fill="rgba(99,102,241,0.7)"/>
+  <circle cx="11.8" cy="11.5" r="1.1" fill="rgba(99,102,241,0.7)"/>
+</svg>
