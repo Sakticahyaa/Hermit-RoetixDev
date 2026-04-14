@@ -120,7 +120,7 @@ export function GanttChart({ entries, projects, onAdd, onEdit, onDelete }: Props
                   }}
                 >
                   {project && (
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: project.color, flexShrink: 0 }} />
+                    <div style={{ width: 3, height: 22, borderRadius: 3, background: project.color, flexShrink: 0 }} />
                   )}
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{ fontSize: 12, fontWeight: 500, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
