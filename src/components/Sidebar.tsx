@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2 } from 'lucide-react'
+import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { HermitCrabIcon } from './ui/HermitCrabIcon'
+import { useTheme } from '../hooks/useTheme'
 
 const navStyle = (isActive: boolean): CSSProperties => ({
   display: 'flex',
@@ -23,6 +24,8 @@ interface Props {
 }
 
 export function Sidebar({ onManageProjects }: Props) {
+  const { theme, toggle } = useTheme()
+
   return (
     <aside style={{
       width: 200, minWidth: 200,
@@ -95,10 +98,22 @@ export function Sidebar({ onManageProjects }: Props) {
       </div>
 
       {/* Bottom */}
-      <div style={{ marginTop: 'auto', padding: '8px', borderTop: '1px solid var(--border)' }}>
+      <div style={{ marginTop: 'auto', padding: '8px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 11, color: 'var(--muted)', padding: '4px 10px' }}>
           Hyke · v1.0
         </div>
+        <button
+          onClick={toggle}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          style={{
+            background: 'none', border: '1px solid var(--border)',
+            borderRadius: 6, padding: '4px 6px', cursor: 'pointer',
+            color: 'var(--muted)', display: 'flex', alignItems: 'center',
+            transition: 'all 0.1s',
+          }}
+        >
+          {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
+        </button>
       </div>
     </aside>
   )
