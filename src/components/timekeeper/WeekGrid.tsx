@@ -109,7 +109,7 @@ function computeLayout(instances: SlotInstance[]): Map<number, LayoutCell> {
     // A slot's colCount = max column used among all slots it overlaps with (+ 1)
     sorted.forEach(({ i: idx, s, e }, pos) => {
       let maxCol = assigned[pos]
-      sorted.forEach(({ i: idx2, s: s2, e: e2 }, pos2) => {
+      sorted.forEach(({ s: s2, e: e2 }, pos2) => {
         if (pos2 === pos) return
         const overlaps = s < e2 && s2 < e
         if (overlaps) maxCol = Math.max(maxCol, assigned[pos2])
@@ -118,7 +118,7 @@ function computeLayout(instances: SlotInstance[]): Map<number, LayoutCell> {
     })
 
     // Slots that don't overlap with anything get colCount = 1
-    sorted.forEach(({ i: idx }, pos) => {
+    sorted.forEach(({ i: idx }) => {
       if (!result.has(idx)) result.set(idx, { colIndex: 0, colCount: 1 })
     })
 
