@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon } from 'lucide-react'
+import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon, X } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { HermitCrabIcon } from './ui/HermitCrabIcon'
 import { useTheme } from '../hooks/useTheme'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const navStyle = (isActive: boolean): CSSProperties => ({
   display: 'flex',
@@ -21,22 +22,42 @@ const navStyle = (isActive: boolean): CSSProperties => ({
 
 interface Props {
   onManageProjects: () => void
+  mobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
-export function Sidebar({ onManageProjects }: Props) {
+export function Sidebar({ onManageProjects, mobileOpen = false, onMobileClose }: Props) {
   const { theme, toggle } = useTheme()
+  const isMobile = useIsMobile()
+
+  const sidebarStyle: CSSProperties = isMobile
+    ? {
+        position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 40,
+        width: 220, minWidth: 220,
+        background: 'var(--surface)',
+        borderRight: '1px solid var(--border)',
+        display: 'flex', flexDirection: 'column',
+        padding: '16px 0', gap: 4,
+        transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.25s ease',
+        boxShadow: mobileOpen ? '4px 0 24px rgba(0,0,0,0.3)' : 'none',
+      }
+    : {
+        width: 200, minWidth: 200,
+        background: 'var(--surface)',
+        borderRight: '1px solid var(--border)',
+        display: 'flex', flexDirection: 'column',
+        padding: '16px 0', gap: 4,
+      }
+
+  const handleNavClick = () => {
+    if (isMobile && onMobileClose) onMobileClose()
+  }
 
   return (
-    <aside style={{
-      width: 200, minWidth: 200,
-      background: 'var(--surface)',
-      borderRight: '1px solid var(--border)',
-      display: 'flex', flexDirection: 'column',
-      padding: '16px 0',
-      gap: 4,
-    }}>
+    <aside style={sidebarStyle}>
       {/* Logo */}
-      <div style={{ padding: '0 16px 16px', borderBottom: '1px solid var(--border)', marginBottom: 8 }}>
+      <div style={{ padding: '0 16px 16px', borderBottom: '1px solid var(--border)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{
             width: 28, height: 28, borderRadius: 6,
@@ -50,10 +71,15 @@ export function Sidebar({ onManageProjects }: Props) {
             <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: -2 }}>RoetixDev</div>
           </div>
         </div>
+        {isMobile && (
+          <button onClick={onMobileClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 4 }}>
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       {/* Tasks section */}
-      <div style={{ padding: '0 8px' }}>
+      <div style={{ padding: '0 8px' }} onClick={handleNavClick}>
         <div style={{ fontSize: 10, color: 'var(--muted)', padding: '4px 8px 6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           Tasks
         </div>
@@ -66,7 +92,7 @@ export function Sidebar({ onManageProjects }: Props) {
         <NavLink to="/RoetixDev/project" style={({ isActive }) => navStyle(isActive)}>
           <FolderOpen size={16} /> Project
         </NavLink>
-        <button onClick={onManageProjects} style={{
+        <button onClick={() => { onManageProjects(); handleNavClick() }} style={{
           width: '100%', textAlign: 'left', padding: '5px 10px',
           borderRadius: 6, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', gap: 8,
@@ -78,7 +104,7 @@ export function Sidebar({ onManageProjects }: Props) {
       </div>
 
       {/* Planning section */}
-      <div style={{ padding: '8px 8px 0', borderTop: '1px solid var(--border)', marginTop: 8 }}>
+      <div style={{ padding: '8px 8px 0', borderTop: '1px solid var(--border)', marginTop: 8 }} onClick={handleNavClick}>
         <div style={{ fontSize: 10, color: 'var(--muted)', padding: '4px 8px 6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           Planning
         </div>
@@ -88,7 +114,7 @@ export function Sidebar({ onManageProjects }: Props) {
       </div>
 
       {/* Team section */}
-      <div style={{ padding: '8px 8px 0', borderTop: '1px solid var(--border)', marginTop: 8 }}>
+      <div style={{ padding: '8px 8px 0', borderTop: '1px solid var(--border)', marginTop: 8 }} onClick={handleNavClick}>
         <div style={{ fontSize: 10, color: 'var(--muted)', padding: '4px 8px 6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           Team
         </div>
