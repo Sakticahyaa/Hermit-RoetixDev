@@ -203,8 +203,9 @@ export function SlotForm({ members, weekDays, draft, editing, onSave, onClose }:
           {/* Times */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div>
-              <label style={labelStyle}>Start</label>
+              <label htmlFor="slot-start" style={{ ...labelStyle, cursor: 'pointer' }}>Start</label>
               <input
+                id="slot-start"
                 type="datetime-local"
                 value={startTime}
                 onChange={e => setStartTime(e.target.value)}
@@ -213,8 +214,9 @@ export function SlotForm({ members, weekDays, draft, editing, onSave, onClose }:
               />
             </div>
             <div>
-              <label style={labelStyle}>End</label>
+              <label htmlFor="slot-end" style={{ ...labelStyle, cursor: 'pointer' }}>End</label>
               <input
+                id="slot-end"
                 type="datetime-local"
                 value={endTime}
                 onChange={e => setEndTime(e.target.value)}
@@ -250,8 +252,9 @@ export function SlotForm({ members, weekDays, draft, editing, onSave, onClose }:
                   </select>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={labelStyle}>Until</label>
+                  <label htmlFor="slot-until" style={{ ...labelStyle, cursor: 'pointer' }}>Until</label>
                   <input
+                    id="slot-until"
                     type="date"
                     value={recurrenceUntil}
                     onChange={e => setRecurrenceUntil(e.target.value)}

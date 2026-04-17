@@ -86,12 +86,12 @@ export function SeerForm({ entry, projects, prefillDates, onSave, onClose }: Pro
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={labelStyle}>Start Date *</label>
-              <input type="date" value={startDate} onChange={e => setStart(e.target.value)} style={inputStyle} />
+              <label htmlFor="seer-start" style={{ ...labelStyle, cursor: 'pointer' }}>Start Date *</label>
+              <input id="seer-start" type="date" value={startDate} onChange={e => setStart(e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>End Date *</label>
-              <input type="date" value={endDate} onChange={e => setEnd(e.target.value)} style={inputStyle} />
+              <label htmlFor="seer-end" style={{ ...labelStyle, cursor: 'pointer' }}>End Date *</label>
+              <input id="seer-end" type="date" value={endDate} onChange={e => setEnd(e.target.value)} style={inputStyle} />
             </div>
           </div>
 

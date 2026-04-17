@@ -131,8 +131,8 @@ export function TaskForm({ task, projects, members, onSave, onClose }: Props) {
 
             {/* Deadline */}
             <div>
-              <label style={labelStyle}>Deadline</label>
-              <input type="date" value={deadline} onChange={e => setDeadline(e.target.value)} style={inputStyle} />
+              <label htmlFor="task-deadline" style={{ ...labelStyle, cursor: 'pointer' }}>Deadline</label>
+              <input id="task-deadline" type="date" value={deadline} onChange={e => setDeadline(e.target.value)} style={inputStyle} />
             </div>
 
             {/* Hours */}
