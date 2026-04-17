@@ -2,26 +2,21 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import type { SeerEntry, SeerInsert, Project } from '../../types'
 
-const PRESET_COLORS = [
-  '#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444',
-  '#8b5cf6','#ec4899','#06b6d4','#84cc16','#f97316',
-]
-
 interface Props {
   entry?: SeerEntry | null
   projects: Project[]
+  prefillDates?: { start: string; end: string }
   onSave: (data: Omit<SeerInsert, 'tenant_id'>) => Promise<void>
   onClose: () => void
 }
 
-export function SeerForm({ entry, projects, onSave, onClose }: Props) {
+export function SeerForm({ entry, projects, prefillDates, onSave, onClose }: Props) {
   const isEdit = !!entry
   const [taskName, setName]     = useState(entry?.task_name ?? '')
   const [description, setDesc]  = useState(entry?.description ?? '')
   const [projectId, setProject] = useState(entry?.project_id ?? '')
-  const [startDate, setStart]   = useState(entry?.start_date ?? '')
-  const [endDate, setEnd]       = useState(entry?.end_date ?? '')
-  const [color, setColor]       = useState(entry?.color ?? '#6366f1')
+  const [startDate, setStart]   = useState(entry?.start_date ?? prefillDates?.start ?? '')
+  const [endDate, setEnd]       = useState(entry?.end_date ?? prefillDates?.end ?? '')
   const [saving, setSaving]     = useState(false)
   const [error, setError]       = useState('')
 
@@ -31,6 +26,9 @@ export function SeerForm({ entry, projects, onSave, onClose }: Props) {
     if (!startDate || !endDate) { setError('Start and end dates required'); return }
     if (startDate > endDate) { setError('End date must be after start date'); return }
     setSaving(true)
+    const derivedColor = projectId
+      ? (projects.find(p => p.id === projectId)?.color ?? '#6366f1')
+      : (entry?.color ?? '#6366f1')
     try {
       await onSave({
         task_name: taskName.trim(),
@@ -38,7 +36,7 @@ export function SeerForm({ entry, projects, onSave, onClose }: Props) {
         project_id: projectId || null,
         start_date: startDate,
         end_date: endDate,
-        color,
+        color: derivedColor,
         order_index: entry?.order_index ?? 0,
       })
       onClose()
@@ -94,19 +92,6 @@ export function SeerForm({ entry, projects, onSave, onClose }: Props) {
             <div>
               <label style={labelStyle}>End Date *</label>
               <input type="date" value={endDate} onChange={e => setEnd(e.target.value)} style={inputStyle} />
-            </div>
-          </div>
-
-          <div>
-            <label style={labelStyle}>Color</label>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {PRESET_COLORS.map(c => (
-                <button key={c} type="button" onClick={() => setColor(c)} style={{
-                  width: 24, height: 24, borderRadius: 6, background: c,
-                  border: color === c ? '2px solid #fff' : '2px solid transparent',
-                  cursor: 'pointer', padding: 0,
-                }} />
-              ))}
             </div>
           </div>
 

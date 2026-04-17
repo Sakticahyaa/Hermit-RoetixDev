@@ -1,11 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Plus, Pencil, Archive, ArchiveRestore, Trash2, FolderOpen } from 'lucide-react'
 import type { Project } from '../types'
-
-const PRESET_COLORS = [
-  '#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444',
-  '#8b5cf6','#ec4899','#06b6d4','#84cc16','#f97316',
-]
 
 interface Props {
   allProjects: Project[]
@@ -251,15 +246,33 @@ function ProjectRow({
 
 // ─── ColorPicker ──────────────────────────────────────────────────────────────
 function ColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+  const [hex, setHex] = useState(value)
+
+  useEffect(() => { setHex(value) }, [value])
+
+  const commit = (raw: string) => {
+    const v = raw.trim()
+    if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v)
+  }
+
   return (
-    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-      {PRESET_COLORS.map(c => (
-        <button key={c} type="button" onClick={() => onChange(c)} style={{
-          width: 16, height: 16, borderRadius: '50%', background: c, padding: 0,
-          border: value === c ? '2px solid #fff' : '2px solid transparent',
-          cursor: 'pointer', outline: 'none', flexShrink: 0,
-        }} />
-      ))}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <input
+        type="color"
+        value={value}
+        onChange={e => { onChange(e.target.value); setHex(e.target.value) }}
+        style={{ width: 28, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+      />
+      <input
+        type="text"
+        value={hex}
+        onChange={e => setHex(e.target.value)}
+        onBlur={e => commit(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && commit(hex)}
+        maxLength={7}
+        placeholder="#6366f1"
+        style={{ ...mini, width: 72 }}
+      />
     </div>
   )
 }
