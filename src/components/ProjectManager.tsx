@@ -19,9 +19,9 @@ export function ProjectManager({
 }: Props) {
   const [editId, setEditId]     = useState<string | null>(null)
   const [editName, setEditName] = useState('')
-  const [editColor, setEditColor] = useState(PRESET_COLORS[0])
+  const [editColor, setEditColor] = useState('#6366f1')
   const [newName, setNewName]   = useState('')
-  const [newColor, setNewColor] = useState(PRESET_COLORS[0])
+  const [newColor, setNewColor] = useState('#6366f1')
   const [saving, setSaving]     = useState(false)
   const [showArchived, setShowArchived] = useState(false)
 
