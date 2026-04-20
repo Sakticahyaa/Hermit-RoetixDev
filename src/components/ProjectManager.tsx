@@ -205,7 +205,7 @@ interface RowProps {
 
 function ProjectRow({
   project, isEditing, editName, editColor, saving,
-  onStartEdit, onNameChange, onColorChange, onSaveEdit, onCancelEdit, onArchive,
+  onStartEdit, onNameChange, onColorChange, onSaveEdit, onCancelEdit, onArchive, onDelete,
 }: RowProps) {
   return (
     <div style={{
@@ -237,6 +237,9 @@ function ProjectRow({
           </button>
           <button onClick={onArchive} style={{ ...iconBtn, color: '#f59e0b' }} title="Archive project">
             <Archive size={13} />
+          </button>
+          <button onClick={onDelete} style={{ ...iconBtn, color: '#ef4444' }} title="Permanently delete">
+            <Trash2 size={13} />
           </button>
         </>
       )}
