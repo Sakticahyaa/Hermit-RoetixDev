@@ -1,4 +1,4 @@
-const COLORS = ['', '#22c55e', '#84cc16', '#f59e0b', '#f97316', '#ef4444']
+const COLORS = ['', '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e']
 const LABELS = ['', 'P1', 'P2', 'P3', 'P4', 'P5']
 
 interface Props { priority: number; showLabel?: boolean }
