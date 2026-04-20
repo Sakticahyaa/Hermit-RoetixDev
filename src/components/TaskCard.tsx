@@ -54,7 +54,7 @@ export function TaskCard({ task, projects, members, onEdit, onArchive, onDelete,
           borderLeft: `3px solid ${projectColor}`,
           opacity: deleting ? 0.5 : 1,
           transition: 'background 0.1s, border-color 0.1s',
-          ...(hovered ? { background: '#202020', borderColor: '#333' } : {}),
+          ...(hovered ? { background: 'var(--hover)' } : {}),
           ...style,
         }}
       >
