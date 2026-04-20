@@ -135,9 +135,10 @@ export function RoetixDev() {
 
         {showNewTask && (
           <TaskForm
+            initialStatus={newInitStatus}
             projects={projects}
             members={members}
-            onSave={(data) => addTask({ ...data, status: newInitStatus })}
+            onSave={(data) => addTask(data)}
             onClose={() => setShowNewTask(false)}
           />
         )}

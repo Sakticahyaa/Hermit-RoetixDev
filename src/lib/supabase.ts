@@ -109,7 +109,9 @@ export async function fetchTasks(tenantId: string, filters: TaskFilters): Promis
   if (filters.priority)    q = q.eq('priority', filters.priority)
   if (filters.search)      q = q.ilike('title', `%${filters.search}%`)
 
-  q = q.order('order_index').order('created_at', { ascending: false })
+  q = q.order('deadline', { ascending: true, nullsFirst: false })
+       .order('priority', { ascending: true })
+       .order('created_at', { ascending: false })
 
   const { data, error } = await q
   if (error) throw error

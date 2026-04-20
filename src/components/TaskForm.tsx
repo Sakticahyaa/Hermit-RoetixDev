@@ -5,17 +5,18 @@ import type { Task, TaskInsert, Project, Member, TaskStatus } from '../types'
 
 interface Props {
   task?: Task | null
+  initialStatus?: TaskStatus
   projects: Project[]
   members: Member[]
   onSave: (data: Partial<TaskInsert>, logNote?: string) => Promise<void>
   onClose: () => void
 }
 
-export function TaskForm({ task, projects, members, onSave, onClose }: Props) {
+export function TaskForm({ task, initialStatus, projects, members, onSave, onClose }: Props) {
   const isEdit = !!task
   const [title, setTitle]       = useState(task?.title ?? '')
   const [description, setDesc]  = useState(task?.description ?? '')
-  const [status, setStatus]     = useState<TaskStatus>(task?.status ?? 'Unassigned')
+  const [status, setStatus]     = useState<TaskStatus>(task?.status ?? initialStatus ?? 'Unassigned')
   const [priority, setPriority] = useState<1|2|3|4|5>(task?.priority ?? 3)
   const [projectId, setProject] = useState(task?.project_id ?? '')
   const [assignees, setAssignees] = useState<string[]>(task?.assignees ?? [])
