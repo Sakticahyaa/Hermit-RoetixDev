@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { TopBar } from '../components/TopBar'
 import { BoardView } from '../components/views/BoardView'
@@ -10,6 +11,9 @@ export function BoardPage() {
     reload, editTask, archiveTask, removeTask, updateFilter, clearFilters,
     openNewTask,
   } = useRoetixDevCtx()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { reload() }, [])
 
   return (
     <>
