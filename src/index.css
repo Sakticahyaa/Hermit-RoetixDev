@@ -63,11 +63,6 @@ input[type="date"], input[type="datetime-local"] { color-scheme: dark; }
 [data-theme="light"] input[type="date"],
 [data-theme="light"] input[type="datetime-local"] { color-scheme: light; }
 
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  display: none;
-}
-
 /* Gantt bar */
 .gantt-bar {
   height: 28px;
