@@ -242,9 +242,11 @@ export function GanttChart({ entries, projects, onAdd, onEdit, onDelete }: Props
               <div style={{ height: 32, display: 'flex', alignItems: 'center' }}>
                 {days.map((d, i) => {
                   const isT = isToday(d); const isWknd = d.getDay() === 0 || d.getDay() === 6
+                  const col = isT ? 'var(--accent)' : isWknd ? '#555' : 'var(--muted)'
                   return (
-                    <div key={i} style={{ width: DAY_W, minWidth: DAY_W, textAlign: 'center', fontSize: 10, color: isT ? 'var(--accent)' : isWknd ? '#555' : 'var(--muted)', fontWeight: isT ? 700 : 400, borderRight: '1px solid var(--border)' }}>
-                      {format(d, 'd')}
+                    <div key={i} style={{ width: DAY_W, minWidth: DAY_W, textAlign: 'center', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                      <span style={{ fontSize: 10, color: col, fontWeight: isT ? 700 : 400 }}>{format(d, 'd')}</span>
+                      <span style={{ fontSize: 8, color: col, opacity: 0.75, fontWeight: isT ? 700 : 400 }}>{format(d, 'EEEEE')}</span>
                     </div>
                   )
                 })}
