@@ -35,6 +35,7 @@ export function TaskCard({ task, projects, members, onEdit, onArchive, onDelete,
 
   const projectColor = task.project?.color ?? '#6b7280'
   const dl = task.deadline ? deadlineLabel(task.deadline) : null
+  const assigneeMembers = members.filter(m => task.assignees?.includes(m.id))
 
   const handleDelete = async () => {
     if (!confirm(`Delete "${task.title}"?`)) return
@@ -113,9 +114,9 @@ export function TaskCard({ task, projects, members, onEdit, onArchive, onDelete,
             </span>
           )}
 
-          {task.assignee && (
-            <span style={{ marginLeft: 'auto' }}>
-              <Avatar name={task.assignee.name} color={task.assignee.avatar_color} size={20} />
+          {assigneeMembers.length > 0 && (
+            <span style={{ marginLeft: 'auto', display: 'flex', gap: 2 }}>
+              {assigneeMembers.map(m => <Avatar key={m.id} name={m.name} color={m.avatar_color} size={20} />)}
             </span>
           )}
         </div>

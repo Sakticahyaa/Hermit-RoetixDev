@@ -70,7 +70,8 @@ export interface Task {
   id: string
   tenant_id: string
   project_id: string | null
-  assigned_to: string | null
+  assigned_to: string | null  // legacy, kept for DB compat
+  assignees: string[]
   title: string
   description: string | null
   status: TaskStatus
@@ -83,10 +84,9 @@ export interface Task {
   updated_at: string
   // joined
   project?: Project
-  assignee?: Member
 }
 
-export type TaskInsert = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'project' | 'assignee'>
+export type TaskInsert = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'project'>
 export type TaskUpdate = Partial<Omit<TaskInsert, 'tenant_id'>>
 
 // ─── Task Status Log ──────────────────────────────────────────────────────────

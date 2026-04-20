@@ -99,12 +99,12 @@ export async function fetchMembers(tenantId: string): Promise<Member[]> {
 export async function fetchTasks(tenantId: string, filters: TaskFilters): Promise<Task[]> {
   let q = supabase
     .from('tasks')
-    .select('*, project:projects(*), assignee:team_members(*)')
+    .select('*, project:projects(*)')
     .eq('tenant_id', tenantId)
 
   q = q.eq('archived', false)
   if (filters.project_id)  q = q.eq('project_id', filters.project_id)
-  if (filters.assignee_id) q = q.eq('assigned_to', filters.assignee_id)
+  if (filters.assignee_id) q = q.contains('assignees', [filters.assignee_id])
   if (filters.status)      q = q.eq('status', filters.status)
   if (filters.priority)    q = q.eq('priority', filters.priority)
   if (filters.search)      q = q.ilike('title', `%${filters.search}%`)
@@ -119,8 +119,8 @@ export async function fetchTasks(tenantId: string, filters: TaskFilters): Promis
 export async function createTask(t: Partial<TaskInsert> & { tenant_id: string; title: string }): Promise<Task> {
   const { data, error } = await supabase
     .from('tasks')
-    .insert({ status: 'Unassigned', priority: 3, order_index: 0, ...t })
-    .select('*, project:projects(*), assignee:team_members(*)')
+    .insert({ status: 'Unassigned', priority: 3, order_index: 0, assignees: [], ...t })
+    .select('*, project:projects(*)')
     .single()
   if (error) throw error
   return data as Task
@@ -131,7 +131,7 @@ export async function updateTask(id: string, updates: TaskUpdate): Promise<Task>
     .from('tasks')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .select('*, project:projects(*), assignee:team_members(*)')
+    .select('*, project:projects(*)')
     .single()
   if (error) throw error
   return data as Task
@@ -150,7 +150,7 @@ export async function unarchiveTask(id: string): Promise<void> {
 export async function fetchArchivedTasks(tenantId: string): Promise<Task[]> {
   const { data, error } = await supabase
     .from('tasks')
-    .select('*, project:projects(*), assignee:team_members(*)')
+    .select('*, project:projects(*)')
     .eq('tenant_id', tenantId)
     .eq('archived', true)
     .order('updated_at', { ascending: false })

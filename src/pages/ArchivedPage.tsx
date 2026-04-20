@@ -8,7 +8,7 @@ import { Avatar } from '../components/ui/Avatar'
 import type { Task } from '../types'
 
 export function ArchivedPage() {
-  const { tenant } = useRoetixDevCtx()
+  const { tenant, members } = useRoetixDevCtx()
   const [tasks, setTasks]     = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState<string | null>(null)
@@ -95,7 +95,10 @@ export function ArchivedPage() {
                           <Clock size={10} /> {task.estimated_hours}h
                         </span>
                       )}
-                      {task.assignee && <Avatar name={task.assignee.name} color={task.assignee.avatar_color} size={18} />}
+                      {task.assignees?.map(id => {
+                        const m = members.find(m => m.id === id)
+                        return m ? <Avatar key={id} name={m.name} color={m.avatar_color} size={18} /> : null
+                      })}
                     </div>
                   </div>
 

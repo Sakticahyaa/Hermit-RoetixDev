@@ -18,7 +18,7 @@ export function TaskForm({ task, projects, members, onSave, onClose }: Props) {
   const [status, setStatus]     = useState<TaskStatus>(task?.status ?? 'Unassigned')
   const [priority, setPriority] = useState<1|2|3|4|5>(task?.priority ?? 3)
   const [projectId, setProject] = useState(task?.project_id ?? '')
-  const [assigneeId, setAssign] = useState(task?.assigned_to ?? '')
+  const [assignees, setAssignees] = useState<string[]>(task?.assignees ?? [])
   const [deadline, setDeadline] = useState(task?.deadline ?? '')
   const [hours, setHours]       = useState(task?.estimated_hours?.toString() ?? '')
   const [logNote, setLogNote]   = useState('')
@@ -38,7 +38,7 @@ export function TaskForm({ task, projects, members, onSave, onClose }: Props) {
         status,
         priority: priority as 1|2|3|4|5,
         project_id: projectId || null,
-        assigned_to: assigneeId || null,
+        assignees,
         deadline: deadline || null,
         estimated_hours: hours ? parseFloat(hours) : null,
       }, statusChanged ? logNote || undefined : undefined)
@@ -120,13 +120,31 @@ export function TaskForm({ task, projects, members, onSave, onClose }: Props) {
               </select>
             </div>
 
-            {/* Assignee */}
-            <div>
-              <label style={labelStyle}>Assignee</label>
-              <select value={assigneeId} onChange={e => setAssign(e.target.value)} style={inputStyle}>
-                <option value="">Unassigned</option>
-                {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
-              </select>
+            {/* Assignees */}
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label style={labelStyle}>Assignees</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {members.map(m => {
+                  const selected = assignees.includes(m.id)
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setAssignees(prev => selected ? prev.filter(id => id !== m.id) : [...prev, m.id])}
+                      style={{
+                        padding: '4px 10px', borderRadius: 20, fontSize: 12, cursor: 'pointer',
+                        border: `1px solid ${selected ? 'var(--accent)' : 'var(--border)'}`,
+                        background: selected ? 'rgba(99,102,241,0.15)' : 'var(--surface)',
+                        color: selected ? 'var(--accent)' : 'var(--muted)',
+                        fontWeight: selected ? 600 : 400,
+                        transition: 'all 0.1s',
+                      }}
+                    >
+                      {m.name}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
 
             {/* Deadline */}

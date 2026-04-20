@@ -51,6 +51,7 @@ export function ListView({ tasks, projects, members, onEdit, onArchive, onDelete
               const dlColor = dl
                 ? (isToday(dl) ? '#f59e0b' : isPast(dl) ? '#ef4444' : 'var(--muted)')
                 : 'var(--muted)'
+              const assigneeMembers = members.filter(m => task.assignees?.includes(m.id))
 
               return (
                 <tr key={task.id} style={{
@@ -85,10 +86,14 @@ export function ListView({ tasks, projects, members, onEdit, onArchive, onDelete
                     ) : '—'}
                   </td>
                   <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
-                    {task.assignee ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Avatar name={task.assignee.name} color={task.assignee.avatar_color} size={18} />
-                        <span style={{ color: 'var(--text)' }}>{task.assignee.name}</span>
+                    {assigneeMembers.length > 0 ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+                        {assigneeMembers.map(m => (
+                          <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Avatar name={m.name} color={m.avatar_color} size={18} />
+                            <span style={{ color: 'var(--text)' }}>{m.name}</span>
+                          </div>
+                        ))}
                       </div>
                     ) : '—'}
                   </td>
