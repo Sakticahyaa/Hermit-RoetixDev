@@ -7,11 +7,12 @@ interface Props {
   projects: Project[]
   members: Member[]
   onEdit: (id: string, data: Partial<TaskInsert>, note?: string) => Promise<void>
+  onArchive: (id: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
   onNewInStatus: (status: TaskStatus) => void
 }
 
-export function BoardView({ tasks, projects, members, onEdit, onDelete, onNewInStatus }: Props) {
+export function BoardView({ tasks, projects, members, onEdit, onArchive, onDelete, onNewInStatus }: Props) {
   return (
     <div style={{
       display: 'flex', gap: 12, overflowX: 'auto',
@@ -75,6 +76,7 @@ export function BoardView({ tasks, projects, members, onEdit, onDelete, onNewInS
                     projects={projects}
                     members={members}
                     onEdit={onEdit}
+                    onArchive={onArchive}
                     onDelete={onDelete}
                   />
                 ))

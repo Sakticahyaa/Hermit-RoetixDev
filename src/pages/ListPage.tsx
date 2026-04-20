@@ -7,7 +7,7 @@ export function ListPage() {
   const {
     tasks, tasksLoading, tasksError, filters,
     projects, members,
-    reload, editTask, removeTask, updateFilter, clearFilters,
+    reload, editTask, archiveTask, removeTask, updateFilter, clearFilters,
     openNewTask,
   } = useRoetixDevCtx()
 
@@ -39,6 +39,7 @@ export function ListPage() {
             projects={projects}
             members={members}
             onEdit={editTask}
+            onArchive={archiveTask}
             onDelete={removeTask}
           />
         )}

@@ -11,6 +11,7 @@ import { useProjects, useAllProjects, ProjectsContext } from '../hooks/useProjec
 import { useMembers } from '../hooks/useMembers'
 import { useTasks } from '../hooks/useTasks'
 import { useSeerEntries } from '../hooks/useSeerEntries'
+import { archiveTasksByProject } from '../lib/supabase'
 import { RoetixDevContext } from '../context/RoetixDevContext'
 import type { TaskStatus, Project } from '../types'
 
@@ -23,7 +24,7 @@ export function RoetixDev() {
   const { entries, addEntry, editEntry, removeEntry } = useSeerEntries(tenant?.id)
   const {
     tasks, loading, error, filters,
-    reload, addTask, editTask, removeTask,
+    reload, addTask, editTask, archiveTask, removeTask,
     updateFilter, clearFilters,
   } = useTasks(tenant?.id)
 
@@ -38,9 +39,14 @@ export function RoetixDev() {
     setShowNewTask(true)
   }
 
-  const handleActiveListChange = (project: Project, action: 'archive' | 'unarchive') => {
-    if (action === 'archive') removeFromActive(project.id)
-    else addToActive(project)
+  const handleActiveListChange = async (project: Project, action: 'archive' | 'unarchive') => {
+    if (action === 'archive') {
+      removeFromActive(project.id)
+      if (tenant) await archiveTasksByProject(project.id, tenant.id)
+      reload()
+    } else {
+      addToActive(project)
+    }
   }
 
   if (tenantLoading) {
@@ -72,6 +78,7 @@ export function RoetixDev() {
     reload,
     addTask,
     editTask,
+    archiveTask,
     removeTask,
     updateFilter,
     clearFilters,

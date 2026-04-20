@@ -29,6 +29,7 @@ export interface RoetixDevCtx {
   reload: () => void
   addTask: (data: Partial<TaskInsert>) => Promise<void>
   editTask: (id: string, updates: TaskUpdate, note?: string, by?: string) => Promise<void>
+  archiveTask: (id: string) => Promise<void>
   removeTask: (id: string) => Promise<void>
   updateFilter: <K extends keyof TaskFilters>(key: K, value: TaskFilters[K]) => void
   clearFilters: () => void

@@ -6,10 +6,11 @@ interface Props {
   projects: Project[]
   members: Member[]
   onEdit: (id: string, data: Partial<TaskInsert>, note?: string) => Promise<void>
+  onArchive: (id: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
 
-export function ProjectView({ tasks, projects, members, onEdit, onDelete }: Props) {
+export function ProjectView({ tasks, projects, members, onEdit, onArchive, onDelete }: Props) {
   // Group tasks by project
   const byProject: Record<string, Task[]> = {}
   const unlinked: Task[] = []
@@ -71,6 +72,7 @@ export function ProjectView({ tasks, projects, members, onEdit, onDelete }: Prop
                   projects={projects}
                   members={members}
                   onEdit={onEdit}
+                  onArchive={onArchive}
                   onDelete={onDelete}
                 />
               ))}

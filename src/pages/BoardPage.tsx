@@ -7,7 +7,7 @@ export function BoardPage() {
   const {
     tasks, tasksLoading, tasksError, filters,
     projects, members,
-    reload, editTask, removeTask, updateFilter, clearFilters,
+    reload, editTask, archiveTask, removeTask, updateFilter, clearFilters,
     openNewTask,
   } = useRoetixDevCtx()
 
@@ -39,6 +39,7 @@ export function BoardPage() {
             projects={projects}
             members={members}
             onEdit={editTask}
+            onArchive={archiveTask}
             onDelete={removeTask}
             onNewInStatus={openNewTask}
           />

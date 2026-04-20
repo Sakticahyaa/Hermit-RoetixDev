@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Trash2, History, Calendar, Clock } from 'lucide-react'
+import { Pencil, Trash2, History, Calendar, Clock, Archive } from 'lucide-react'
 import { format, isPast, isToday } from 'date-fns'
 import { StatusBadge } from '../ui/StatusBadge'
 import { PriorityDot } from '../ui/PriorityDot'
@@ -13,10 +13,11 @@ interface Props {
   projects: Project[]
   members: Member[]
   onEdit: (id: string, data: Partial<TaskInsert>, note?: string) => Promise<void>
+  onArchive: (id: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
 
-export function ListView({ tasks, projects, members, onEdit, onDelete }: Props) {
+export function ListView({ tasks, projects, members, onEdit, onArchive, onDelete }: Props) {
   const [editing, setEditing]   = useState<Task | null>(null)
   const [logging, setLogging]   = useState<Task | null>(null)
 
@@ -113,6 +114,9 @@ export function ListView({ tasks, projects, members, onEdit, onDelete }: Props) 
                       </button>
                       <button onClick={() => setEditing(task)} style={actionBtn} title="Edit">
                         <Pencil size={13} />
+                      </button>
+                      <button onClick={() => onArchive(task.id)} style={{ ...actionBtn, color: '#f59e0b' }} title="Archive">
+                        <Archive size={13} />
                       </button>
                       <button
                         onClick={() => confirm(`Delete "${task.title}"?`) && onDelete(task.id)}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   fetchTasks, createTask, updateTask, deleteTask, reorderTasks,
-  createTaskLog,
+  createTaskLog, archiveTask,
 } from '../lib/supabase'
 import type { Task, TaskInsert, TaskUpdate, TaskFilters, TaskStatus } from '../types'
 
@@ -67,6 +67,11 @@ export function useTasks(tenantId: string | undefined, initialFilters?: Partial<
     setTasks(prev => prev.map(t => t.id === id ? updated : t))
   }
 
+  const archTask = async (id: string) => {
+    await archiveTask(id)
+    setTasks(prev => prev.filter(t => t.id !== id))
+  }
+
   const removeTask = async (id: string) => {
     await deleteTask(id)
     setTasks(prev => prev.filter(t => t.id !== id))
@@ -91,7 +96,7 @@ export function useTasks(tenantId: string | undefined, initialFilters?: Partial<
   return {
     tasks, loading, error, filters,
     reload: load,
-    addTask, editTask, removeTask, reorder,
+    addTask, editTask, archiveTask: archTask, removeTask, reorder,
     updateFilter, clearFilters,
     getByStatus, setTasks,
   }

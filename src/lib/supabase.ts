@@ -102,6 +102,7 @@ export async function fetchTasks(tenantId: string, filters: TaskFilters): Promis
     .select('*, project:projects(*), assignee:team_members(*)')
     .eq('tenant_id', tenantId)
 
+  q = q.eq('archived', false)
   if (filters.project_id)  q = q.eq('project_id', filters.project_id)
   if (filters.assignee_id) q = q.eq('assigned_to', filters.assignee_id)
   if (filters.status)      q = q.eq('status', filters.status)
@@ -134,6 +135,21 @@ export async function updateTask(id: string, updates: TaskUpdate): Promise<Task>
     .single()
   if (error) throw error
   return data as Task
+}
+
+export async function archiveTask(id: string): Promise<void> {
+  const { error } = await supabase.from('tasks').update({ archived: true }).eq('id', id)
+  if (error) throw error
+}
+
+export async function archiveTasksByProject(projectId: string, tenantId: string): Promise<void> {
+  const { error } = await supabase
+    .from('tasks')
+    .update({ archived: true })
+    .eq('project_id', projectId)
+    .eq('tenant_id', tenantId)
+    .eq('archived', false)
+  if (error) throw error
 }
 
 export async function deleteTask(id: string): Promise<void> {

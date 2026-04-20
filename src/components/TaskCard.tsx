@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Trash2, Clock, Calendar, History } from 'lucide-react'
+import { Pencil, Trash2, Clock, Calendar, History, Archive } from 'lucide-react'
 import { isPast, isToday, isTomorrow } from 'date-fns'
 import { StatusBadge } from './ui/StatusBadge'
 import { PriorityDot } from './ui/PriorityDot'
@@ -13,6 +13,7 @@ interface Props {
   projects: Project[]
   members: Member[]
   onEdit: (id: string, data: Partial<TaskInsert>, logNote?: string) => Promise<void>
+  onArchive: (id: string) => Promise<void>
   onDelete: (id: string) => Promise<void>
   style?: React.CSSProperties
 }
@@ -26,7 +27,7 @@ function deadlineLabel(dl: string) {
   return { text: `${days}d`, color: days <= 3 ? '#f97316' : 'var(--muted)' }
 }
 
-export function TaskCard({ task, projects, members, onEdit, onDelete, style }: Props) {
+export function TaskCard({ task, projects, members, onEdit, onArchive, onDelete, style }: Props) {
   const [editing, setEditing]   = useState(false)
   const [showLog, setShowLog]   = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -68,6 +69,9 @@ export function TaskCard({ task, projects, members, onEdit, onDelete, style }: P
             </button>
             <button onClick={() => setEditing(true)} style={actionBtn} title="Edit">
               <Pencil size={12} />
+            </button>
+            <button onClick={() => onArchive(task.id)} style={{ ...actionBtn, color: '#f59e0b' }} title="Archive">
+              <Archive size={12} />
             </button>
             <button onClick={handleDelete} style={{ ...actionBtn, color: '#ef4444' }} title="Delete">
               <Trash2 size={12} />

@@ -78,6 +78,7 @@ export interface Task {
   deadline: string | null
   estimated_hours: number | null
   order_index: number
+  archived: boolean
   created_at: string
   updated_at: string
   // joined
