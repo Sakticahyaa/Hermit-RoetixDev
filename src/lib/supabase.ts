@@ -142,6 +142,22 @@ export async function archiveTask(id: string): Promise<void> {
   if (error) throw error
 }
 
+export async function unarchiveTask(id: string): Promise<void> {
+  const { error } = await supabase.from('tasks').update({ archived: false }).eq('id', id)
+  if (error) throw error
+}
+
+export async function fetchArchivedTasks(tenantId: string): Promise<Task[]> {
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*, project:projects(*), assignee:team_members(*)')
+    .eq('tenant_id', tenantId)
+    .eq('archived', true)
+    .order('updated_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as Task[]
+}
+
 export async function archiveTasksByProject(projectId: string, tenantId: string): Promise<void> {
   const { error } = await supabase
     .from('tasks')

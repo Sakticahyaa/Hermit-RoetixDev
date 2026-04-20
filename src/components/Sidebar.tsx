@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon, X } from 'lucide-react'
+import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon, X, Archive } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { HermitCrabIcon } from './ui/HermitCrabIcon'
 import { useTheme } from '../hooks/useTheme'
@@ -91,6 +91,9 @@ export function Sidebar({ onManageProjects, mobileOpen = false, onMobileClose }:
         </NavLink>
         <NavLink to="/RoetixDev/project" style={({ isActive }) => navStyle(isActive)}>
           <FolderOpen size={16} /> Project
+        </NavLink>
+        <NavLink to="/RoetixDev/archived" style={({ isActive }) => navStyle(isActive)}>
+          <Archive size={16} /> Archived
         </NavLink>
         <button onClick={() => { onManageProjects(); handleNavClick() }} style={{
           width: '100%', textAlign: 'left', padding: '5px 10px',

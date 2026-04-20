@@ -5,6 +5,7 @@ import { ListPage } from './pages/ListPage'
 import { ProjectPage } from './pages/ProjectPage'
 import { SeerPage } from './pages/SeerPage'
 import { TimekeeperPage } from './pages/TimekeeperPage'
+import { ArchivedPage } from './pages/ArchivedPage'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="project" element={<ProjectPage />} />
           <Route path="seer" element={<SeerPage />} />
           <Route path="timekeeper" element={<TimekeeperPage />} />
+          <Route path="archived" element={<ArchivedPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/RoetixDev/board" replace />} />
       </Routes>
