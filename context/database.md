@@ -32,10 +32,17 @@ Members: Sakti (#ef4444), Bob (#3b82f6), Dzaki (#10b981), Yitzhak (#f59e0b), Bia
 
 ### tasks
 ```
-id, tenant_id, project_id, assigned_to, title, description,
+id, tenant_id, project_id, assigned_to (legacy uuid|null), assignees (text[] DEFAULT '{}'),
+title, description,
 status CHECK (Unassigned|Assigned|Ongoing|Developed|Failed|Revision|Passed|Done),
-priority (1-5), deadline, estimated_hours, order_index, created_at, updated_at
+priority (1-5), deadline, estimated_hours, order_index,
+archived (boolean DEFAULT false), created_at, updated_at
 ```
+- `assigned_to` is kept for DB compat but the app now uses `assignees` (array of member UUIDs)
+- `archived = true` hides task from all views; accessible via `/RoetixDev/archived`
+- Archiving a project auto-archives all its tasks
+- Sorted in UI by: deadline ASC (nulls last) → priority ASC → created_at DESC
+- Priority scale: 1 = Critical (red) → 5 = Minimal (green)
 
 ### task_status_history
 Log of all status changes — drives the flowchart view.

@@ -33,14 +33,19 @@ Content-Type: application/json
 
 ## Tasks
 
-### List all tasks
+### List all tasks (excludes archived)
 ```
-GET /tasks?tenant_id=eq.<TENANT_ID>&select=*,project:projects(*),assignee:team_members(*)
+GET /tasks?tenant_id=eq.<TENANT_ID>&archived=eq.false&select=*,project:projects(*)
 ```
 
 ### List by status
 ```
-GET /tasks?tenant_id=eq.<TENANT_ID>&status=eq.Ongoing&select=*
+GET /tasks?tenant_id=eq.<TENANT_ID>&archived=eq.false&status=eq.Ongoing&select=*
+```
+
+### List tasks assigned to a member
+```
+GET /tasks?tenant_id=eq.<TENANT_ID>&archived=eq.false&assignees=cs.{"<member_id>"}&select=*
 ```
 
 ### Create task
@@ -50,9 +55,9 @@ POST /tasks
   "tenant_id": "<TENANT_ID>",
   "title": "Task title",
   "status": "Unassigned",
-  "priority": 3,                        // 1 (low) – 5 (critical)
+  "priority": 3,                        // 1 (Critical/red) – 5 (Minimal/green)
   "project_id": "<project_id>",         // optional
-  "assigned_to": "<member_id>",         // optional
+  "assignees": ["<member_id>", ...],    // optional, array of member UUIDs
   "description": "...",                 // optional
   "deadline": "2026-05-01",             // optional, date string
   "estimated_hours": 4                  // optional
@@ -65,11 +70,28 @@ After creating, POST the initial log entry (see Status Log below).
 PATCH /tasks?id=eq.<task_id>
 Prefer: return=representation
 {
-  "assigned_to": "<member_id>",
+  "assignees": ["<member_id>", "<member_id2>"],
   "priority": 4,
   "deadline": "2026-05-10",
   "updated_at": "<ISO timestamp>"
 }
+```
+
+### Archive task (hide from views)
+```
+PATCH /tasks?id=eq.<task_id>
+{ "archived": true }
+```
+
+### Restore archived task
+```
+PATCH /tasks?id=eq.<task_id>
+{ "archived": false }
+```
+
+### List tasks (excludes archived by default)
+```
+GET /tasks?tenant_id=eq.<TENANT_ID>&archived=eq.false&select=*,project:projects(*)
 ```
 
 ### Update task status ⚠️ TWO STEPS REQUIRED
