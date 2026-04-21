@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon, X, Archive } from 'lucide-react'
+import { LayoutDashboard, List, FolderOpen, BarChart2, Clock, Settings2, Sun, Moon, X, Archive, RefreshCw } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { HermitCrabIcon } from './ui/HermitCrabIcon'
+import { Avatar } from './ui/Avatar'
 import { useTheme } from '../hooks/useTheme'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useRoetixDevCtx } from '../context/RoetixDevContext'
 
 const navStyle = (isActive: boolean): CSSProperties => ({
   display: 'flex',
@@ -29,6 +31,7 @@ interface Props {
 export function Sidebar({ onManageProjects, mobileOpen = false, onMobileClose }: Props) {
   const { theme, toggle } = useTheme()
   const isMobile = useIsMobile()
+  const { currentMember, clearMember } = useRoetixDevCtx()
 
   const sidebarStyle: CSSProperties = isMobile
     ? {
@@ -127,22 +130,40 @@ export function Sidebar({ onManageProjects, mobileOpen = false, onMobileClose }:
       </div>
 
       {/* Bottom */}
-      <div style={{ marginTop: 'auto', padding: '8px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: 11, color: 'var(--muted)', padding: '4px 10px' }}>
-          Hyke · v1.0
+      <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)' }}>
+        {/* Current member */}
+        {currentMember && (
+          <div style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Avatar name={currentMember.name} color={currentMember.avatar_color} size={26} />
+            <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {currentMember.name}
+            </span>
+            <button
+              onClick={clearMember}
+              title="Switch user"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 2, borderRadius: 4 }}
+            >
+              <RefreshCw size={12} />
+            </button>
+          </div>
+        )}
+        <div style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ fontSize: 11, color: 'var(--muted)', padding: '4px 10px' }}>
+            Hyke · v1.0
+          </div>
+          <button
+            onClick={toggle}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              borderRadius: 6, padding: '4px 6px', cursor: 'pointer',
+              color: 'var(--muted)', display: 'flex', alignItems: 'center',
+              transition: 'all 0.1s',
+            }}
+          >
+            {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
+          </button>
         </div>
-        <button
-          onClick={toggle}
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          style={{
-            background: 'none', border: '1px solid var(--border)',
-            borderRadius: 6, padding: '4px 6px', cursor: 'pointer',
-            color: 'var(--muted)', display: 'flex', alignItems: 'center',
-            transition: 'all 0.1s',
-          }}
-        >
-          {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
-        </button>
       </div>
     </aside>
   )

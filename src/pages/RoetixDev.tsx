@@ -12,6 +12,8 @@ import { useMembers } from '../hooks/useMembers'
 import { useTasks } from '../hooks/useTasks'
 import { useSeerEntries } from '../hooks/useSeerEntries'
 import { archiveTasksByProject } from '../lib/supabase'
+import { useCurrentMember } from '../hooks/useCurrentMember'
+import { MemberPicker } from '../components/MemberPicker'
 import { RoetixDevContext } from '../context/RoetixDevContext'
 import type { TaskStatus, Project } from '../types'
 
@@ -27,6 +29,8 @@ export function RoetixDev() {
     reload, addTask, editTask, archiveTask, removeTask,
     updateFilter, clearFilters,
   } = useTasks(tenant?.id)
+
+  const { currentMember, pick: pickMember, clear: clearMember, needsPick } = useCurrentMember(members)
 
   const [showNewTask, setShowNewTask]   = useState(false)
   const [newInitStatus, setNewInit]     = useState<TaskStatus>('Unassigned')
@@ -87,8 +91,15 @@ export function RoetixDev() {
     editSeerEntry: editEntry,
     removeSeerEntry: removeEntry,
     allProjectsHook,
+    currentMember,
+    pickMember,
+    clearMember,
     openNewTask,
     openProjects: () => setShowProjects(true),
+  }
+
+  if (needsPick) {
+    return <MemberPicker members={members} onPick={pickMember} />
   }
 
   return (

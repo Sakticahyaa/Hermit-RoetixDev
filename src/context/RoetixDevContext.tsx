@@ -40,6 +40,10 @@ export interface RoetixDevCtx {
   removeSeerEntry: (id: string) => Promise<void>
   // All projects (for ProjectManager modal)
   allProjectsHook: AllProjectsHook
+  // Identity
+  currentMember: Member | null
+  pickMember: (member: Member) => void
+  clearMember: () => void
   // UI actions exposed to child pages
   openNewTask: (status?: TaskStatus) => void
   openProjects: () => void
