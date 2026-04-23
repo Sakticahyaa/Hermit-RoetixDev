@@ -17,9 +17,67 @@ interface Props {
   onDelete: (id: string) => Promise<void>
 }
 
+function renderRow(
+  task: Task, members: Member[],
+  setEditing: (t: Task) => void, setLogging: (t: Task) => void,
+  onArchive: (id: string) => Promise<void>, onDelete: (id: string) => Promise<void>,
+  dimmed = false,
+) {
+  const dl = task.deadline ? new Date(task.deadline) : null
+  const dlColor = dl ? (isToday(dl) ? '#f59e0b' : isPast(dl) ? '#ef4444' : 'var(--muted)') : 'var(--muted)'
+  const assigneeMembers = members.filter(m => task.assignees?.includes(m.id))
+  return (
+    <tr key={task.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.1s', opacity: dimmed ? 0.55 : 1 }}
+      onMouseEnter={e => (e.currentTarget.style.background = 'var(--hover)')}
+      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+    >
+      <td style={{ padding: '10px 10px 10px 14px', width: 20 }}><PriorityDot priority={task.priority} /></td>
+      <td style={{ padding: '10px', maxWidth: 300 }}>
+        <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: task.description ? 2 : 0, textDecoration: dimmed ? 'line-through' : 'none' }}>{task.title}</div>
+        {task.description && (
+          <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: 280 }}>{task.description}</div>
+        )}
+      </td>
+      <td style={{ padding: '10px', whiteSpace: 'nowrap' }}><StatusBadge status={task.status} size="sm" /></td>
+      <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
+        {task.project ? <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 4, background: `${task.project.color}22`, color: task.project.color }}>{task.project.name}</span> : '—'}
+      </td>
+      <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
+        {assigneeMembers.length > 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+            {assigneeMembers.map(m => (
+              <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Avatar name={m.name} color={m.avatar_color} size={18} />
+                <span style={{ color: 'var(--text)' }}>{m.name}</span>
+              </div>
+            ))}
+          </div>
+        ) : '—'}
+      </td>
+      <td style={{ padding: '10px', color: dlColor, whiteSpace: 'nowrap' }}>
+        {dl ? <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Calendar size={11} />{format(dl, 'MMM d')}</span> : '—'}
+      </td>
+      <td style={{ padding: '10px', color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+        {task.estimated_hours ? <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={11} /> {task.estimated_hours}h</span> : '—'}
+      </td>
+      <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <button onClick={() => setLogging(task)} style={actionBtn} title="History"><History size={13} /></button>
+          <button onClick={() => setEditing(task)} style={actionBtn} title="Edit"><Pencil size={13} /></button>
+          <button onClick={() => onArchive(task.id)} style={{ ...actionBtn, color: '#f59e0b' }} title="Archive"><Archive size={13} /></button>
+          <button onClick={() => confirm(`Delete "${task.title}"?`) && onDelete(task.id)} style={{ ...actionBtn, color: '#ef4444' }} title="Delete"><Trash2 size={13} /></button>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
 export function ListView({ tasks, projects, members, onEdit, onArchive, onDelete }: Props) {
   const [editing, setEditing]   = useState<Task | null>(null)
   const [logging, setLogging]   = useState<Task | null>(null)
+
+  const active = tasks.filter(t => t.status !== 'Done')
+  const done   = tasks.filter(t => t.status === 'Done')
 
   if (tasks.length === 0) {
     return (
@@ -46,94 +104,21 @@ export function ListView({ tasks, projects, members, onEdit, onArchive, onDelete
             </tr>
           </thead>
           <tbody>
-            {tasks.map(task => {
-              const dl = task.deadline ? new Date(task.deadline) : null
-              const dlColor = dl
-                ? (isToday(dl) ? '#f59e0b' : isPast(dl) ? '#ef4444' : 'var(--muted)')
-                : 'var(--muted)'
-              const assigneeMembers = members.filter(m => task.assignees?.includes(m.id))
-
-              return (
-                <tr key={task.id} style={{
-                  borderBottom: '1px solid var(--border)',
-                  transition: 'background 0.1s',
-                }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--hover)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <td style={{ padding: '10px 10px 10px 14px', width: 20 }}>
-                    <PriorityDot priority={task.priority} />
-                  </td>
-                  <td style={{ padding: '10px', maxWidth: 300 }}>
-                    <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: task.description ? 2 : 0 }}>{task.title}</div>
-                    {task.description && (
-                      <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: 280 }}>
-                        {task.description}
-                      </div>
-                    )}
-                  </td>
-                  <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
-                    <StatusBadge status={task.status} size="sm" />
-                  </td>
-                  <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
-                    {task.project ? (
-                      <span style={{
-                        fontSize: 11, padding: '2px 6px', borderRadius: 4,
-                        background: `${task.project.color}22`, color: task.project.color,
-                      }}>
-                        {task.project.name}
-                      </span>
-                    ) : '—'}
-                  </td>
-                  <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
-                    {assigneeMembers.length > 0 ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-                        {assigneeMembers.map(m => (
-                          <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Avatar name={m.name} color={m.avatar_color} size={18} />
-                            <span style={{ color: 'var(--text)' }}>{m.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : '—'}
-                  </td>
-                  <td style={{ padding: '10px', color: dlColor, whiteSpace: 'nowrap' }}>
-                    {dl ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Calendar size={11} />
-                        {format(dl, 'MMM d')}
-                      </span>
-                    ) : '—'}
-                  </td>
-                  <td style={{ padding: '10px', color: 'var(--muted)', whiteSpace: 'nowrap' }}>
-                    {task.estimated_hours ? (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Clock size={11} /> {task.estimated_hours}h
-                      </span>
-                    ) : '—'}
-                  </td>
-                  <td style={{ padding: '10px', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      <button onClick={() => setLogging(task)} style={actionBtn} title="History">
-                        <History size={13} />
-                      </button>
-                      <button onClick={() => setEditing(task)} style={actionBtn} title="Edit">
-                        <Pencil size={13} />
-                      </button>
-                      <button onClick={() => onArchive(task.id)} style={{ ...actionBtn, color: '#f59e0b' }} title="Archive">
-                        <Archive size={13} />
-                      </button>
-                      <button
-                        onClick={() => confirm(`Delete "${task.title}"?`) && onDelete(task.id)}
-                        style={{ ...actionBtn, color: '#ef4444' }} title="Delete"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
+            {active.map(task => renderRow(task, members, setEditing, setLogging, onArchive, onDelete))}
+            {done.length > 0 && (
+              <tr>
+                <td colSpan={8} style={{ padding: '6px 14px', background: 'var(--surface)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+                    <span style={{ fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
+                      Done · {done.length}
+                    </span>
+                    <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+                  </div>
+                </td>
+              </tr>
+            )}
+            {done.map(task => renderRow(task, members, setEditing, setLogging, onArchive, onDelete, true))}
           </tbody>
         </table>
       </div>
